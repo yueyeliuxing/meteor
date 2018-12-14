@@ -34,6 +34,8 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
 
     private volatile boolean stop = false;
 
+    private long lastCheckpointTime;
+
     private ScheduledExecutorService scheduledExecutorService;
 
     public LocatedDataIndexTables(String indexTablesDirectory) {
@@ -70,8 +72,9 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
     }
 
     private void checkpoint(){
+        lastCheckpointTime = System.currentTimeMillis();
         scheduledExecutorService.scheduleWithFixedDelay(()->{
-            if(!stop && editLogStorage.isStartCheckpoint()){
+            if(!stop && (editLogStorage.isStartCheckpoint()|| lastCheckpointTime - System.currentTimeMillis() > 5 * 60 * 1000)){
                 editLogStorage.startCheckpoint();
                 DataIndexTables indexTables = mirrorImageStorage.load2IndexTables();
                 while(editLogStorage.readable() > 0){
@@ -99,7 +102,8 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
                 }
                 mirrorImageStorage.storageIndexTables(indexTables);
                 editLogStorage.endCheckpoint();
+                lastCheckpointTime = System.currentTimeMillis();
             }
-        }, 0, 5, TimeUnit.MINUTES);
+        }, 0, 1, TimeUnit.MINUTES);
     }
 }
