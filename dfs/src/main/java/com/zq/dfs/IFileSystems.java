@@ -5,6 +5,7 @@ import com.zq.dfs.config.FileSystemConfiguration;
 import com.zq.dfs.config.LocatedConfiguration;
 import com.zq.dfs.constants.FileSystemType;
 import com.zq.dfs.data.IDataFileSystem;
+import com.zq.dfs.data.storage.ILocatedDataFileSystem;
 import com.zq.dfs.local.ILocalFileSystem;
 
 /**

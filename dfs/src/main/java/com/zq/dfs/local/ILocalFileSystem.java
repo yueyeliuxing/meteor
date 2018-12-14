@@ -1,9 +1,6 @@
 package com.zq.dfs.local;
 
 import com.zq.dfs.*;
-import com.zq.dfs.filesystem.*;
-import com.zq.dfs.config.Configuration;
-import com.zq.dfs.config.FileSystemConfiguration;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -91,7 +88,7 @@ public class ILocalFileSystem implements IFileSystem {
 
     @Override
     public void close() {
-        indexTables.clear();
+        indexTables.close();
     }
 
 

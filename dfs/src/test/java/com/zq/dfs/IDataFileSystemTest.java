@@ -1,5 +1,7 @@
 package com.zq.dfs;
 
+import org.junit.Test;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +12,10 @@ import java.util.List;
  * @author: zhouqi1
  * @create: 2018-12-10 20:35
  **/
-public class FileTest {
+public class IDataFileSystemTest {
 
-    public void testList(){
+    @Test
+    public void test1(){
         File file = null;
         List<String> s = new ArrayList<>();
     }

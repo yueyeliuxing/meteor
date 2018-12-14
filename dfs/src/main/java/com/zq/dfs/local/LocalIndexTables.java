@@ -43,7 +43,8 @@ public class LocalIndexTables implements IndexTables {
     }
 
     @Override
-    public void clear() {
+    public void close() {
 
     }
+
 }
