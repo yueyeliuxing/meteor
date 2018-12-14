@@ -25,6 +25,6 @@ public class FileSystemConfiguration {
      * @return
      */
     public FileSystemType fileSystemType(){
-        return FileSystemType.valueOf(configuration.getParam(IFileSystemConstants.FILE_SYSTEM_TYPE));
+        return FileSystemType.valueOf(configuration.get(IFileSystemConstants.FILE_SYSTEM_TYPE));
     }
 }

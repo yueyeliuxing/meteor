@@ -13,12 +13,15 @@ public class Configuration {
 
     private Map<String, String> config;
 
-    public Configuration(Map<String, String> config) {
+    public Configuration() {
         this.config = new HashMap<>();
-        this.config.putAll(config);
     }
 
-    public String getParam(String key){
+    public void put(String key, String value){
+        config.put(key, value);
+    }
+
+    public String get(String key){
         return config.get(key);
     }
 }

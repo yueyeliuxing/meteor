@@ -84,7 +84,7 @@ public abstract class IDataFile extends IAbstractNode implements IFile {
     public abstract void doRead(byte[] data,  int offset, int len);
 
     private void rangeCheck(int index) {
-        if (index >= length){
+        if (index > length){
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
         }
     }

@@ -80,8 +80,8 @@ public class IDataFileSystem implements IFileSystem {
     }
 
     private boolean isFilePath(String path){
-        return path.indexOf(IFileSystemConstants.PATH_SEPARATOR) != 0
-                || path.lastIndexOf(IFileSystemConstants.PATH_SEPARATOR) == path.length() -1;
+        return path.indexOf(IFileSystemConstants.PATH_SEPARATOR) == 0
+                && path.lastIndexOf(IFileSystemConstants.PATH_SEPARATOR) != path.length() -1;
     }
 
     @Override
@@ -89,15 +89,18 @@ public class IDataFileSystem implements IFileSystem {
         if(!isDirectoryPath(path)){
             throw new IOException(String.format("this is not a file path:%s", path));
         }
-        IDirectory directory = null;
+        IDirectory directory = (IDirectory) indexTables.root();
         String[] params = path.split(IFileSystemConstants.PATH_SEPARATOR);
         String currentPath = indexTables.root().path();
         for(String param : params){
+            if(param.equals("")){
+                continue;
+            }
             currentPath += param + IFileSystemConstants.PATH_SEPARATOR;
             if(!exists(currentPath)){
                 IDirectory currentDirectory = new IDataDirectory(directory, currentPath);
                 directory.addDirectory(currentDirectory);
-                indexTables.put(currentPath, directory);
+                indexTables.put(currentPath, currentDirectory);
             }
             directory = (IDirectory) find(currentPath);
         }
@@ -105,16 +108,16 @@ public class IDataFileSystem implements IFileSystem {
     }
 
     private boolean isDirectoryPath(String path) {
-        return path.indexOf(IFileSystemConstants.PATH_SEPARATOR) != 0
-                || path.lastIndexOf(IFileSystemConstants.PATH_SEPARATOR) != path.length() -1;
+        return path.indexOf(IFileSystemConstants.PATH_SEPARATOR) == 0
+                && path.lastIndexOf(IFileSystemConstants.PATH_SEPARATOR) == path.length() -1;
     }
 
     @Override
     public void delete(String path) {
         if(exists(path)){
-            indexTables.remove(path);
             INode node = find(path);
             node.distory();
+            indexTables.remove(path);
         }
     }
 
@@ -126,9 +129,6 @@ public class IDataFileSystem implements IFileSystem {
         INode srcNode = find(srcPath);
         indexTables.remove(srcPath);
 
-        if(targetPath.lastIndexOf(IFileSystemConstants.PATH_SEPARATOR) == targetPath.length() - 1){
-            targetPath.substring(0, targetPath.length() - 1);
-        }
         String targetParentPath = targetPath.substring(0, targetPath.lastIndexOf(IFileSystemConstants.PATH_SEPARATOR)+1);
         String targetName  = targetPath.substring(targetPath.lastIndexOf(IFileSystemConstants.PATH_SEPARATOR)+1);
         if(!exists(targetParentPath)){

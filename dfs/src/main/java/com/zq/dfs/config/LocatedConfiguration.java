@@ -19,7 +19,7 @@ public class LocatedConfiguration extends FileSystemConfiguration {
      * @return
      */
     public String indexTableFilePath(){
-        return configuration.getParam(IFileSystemConstants.INDEX_TABLES_FILE_PATH);
+        return configuration.get(IFileSystemConstants.INDEX_TABLES_FILE_PATH);
     }
 
     /**
@@ -27,6 +27,6 @@ public class LocatedConfiguration extends FileSystemConfiguration {
      * @return
      */
     public String blockFilePath(){
-        return configuration.getParam(IFileSystemConstants.BLOCK_FILE_PATH);
+        return configuration.get(IFileSystemConstants.BLOCK_FILE_PATH);
     }
 }

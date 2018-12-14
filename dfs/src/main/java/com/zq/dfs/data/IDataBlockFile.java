@@ -85,7 +85,6 @@ public class IDataBlockFile extends IDataFile {
             for(Block block : blocks){
                 block.close();
             }
-            blocks.clear();
         }
     }
 

@@ -41,6 +41,9 @@ public class IDataDirectory extends IAbstractNode implements IDirectory, Persist
     }
 
     private String getName(String path) {
+        if(path.equals(IFileSystemConstants.PATH_SEPARATOR)){
+            return "";
+        }
         String[] temp = path.split(IFileSystemConstants.PATH_SEPARATOR);
         return temp[temp.length-1];
     }

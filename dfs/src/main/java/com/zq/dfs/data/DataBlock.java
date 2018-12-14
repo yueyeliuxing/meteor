@@ -45,7 +45,7 @@ public class DataBlock extends AbstractBlock implements Block {
     }
 
     private void rangeCheck(int index) {
-        if (index >= length){
+        if (index > length){
             throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
         }
     }
