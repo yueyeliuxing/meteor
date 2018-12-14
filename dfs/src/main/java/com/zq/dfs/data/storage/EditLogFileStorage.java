@@ -37,8 +37,8 @@ public class EditLogFileStorage {
         try {
             this.logFilePath = indexTablesDirectory + IFileSystemConstants.PATH_SEPARATOR + INDEX_TABLE_EDIT_LOG_FILE_NAME;
             this.logNewFilePath = indexTablesDirectory + IFileSystemConstants.PATH_SEPARATOR + INDEX_TABLE_EDIT_LOG_NEW__FILE_NAME;
-            this.logFile = new RandomAccessFile(logFilePath, "re");
-            this.logNewFile = new RandomAccessFile(logNewFilePath, "re");
+            this.logFile = new RandomAccessFile(logFilePath, "rw");
+            this.logNewFile = new RandomAccessFile(logNewFilePath, "rw");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

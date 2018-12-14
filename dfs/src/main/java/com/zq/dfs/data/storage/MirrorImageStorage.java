@@ -25,7 +25,7 @@ public class MirrorImageStorage {
     public MirrorImageStorage(String indexTablesDirectory) {
         try {
             this.mFile = new File(indexTablesDirectory + IFileSystemConstants.PATH_SEPARATOR + INDEX_TABLE_MIRROR_FILE_NAME);
-            this.mirrorFile = new RandomAccessFile(mFile, "re");
+            this.mirrorFile = new RandomAccessFile(mFile, "rw");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -50,7 +50,7 @@ public class MirrorImageStorage {
             byte[] mirrorBytes = indexTables.serialize();
             mirrorFile.close();
             mFile.delete();
-            this.mirrorFile = new RandomAccessFile(mFile, "re");
+            this.mirrorFile = new RandomAccessFile(mFile, "rw");
             mirrorFile.write(mirrorBytes);
         } catch (IOException e) {
             e.printStackTrace();

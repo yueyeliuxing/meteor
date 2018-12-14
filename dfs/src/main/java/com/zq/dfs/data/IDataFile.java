@@ -3,6 +3,8 @@ package com.zq.dfs.data;
 import com.zq.dfs.IAbstractNode;
 import com.zq.dfs.IFile;
 
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 /**
  * @program: ZQDFS
  * @description: 文件
@@ -20,6 +22,21 @@ public abstract class IDataFile extends IAbstractNode implements IFile {
      * 读索引
      */
     protected int readIndex;
+
+    /**
+     * 文件读写锁
+     */
+    private ReentrantReadWriteLock fileLock = new ReentrantReadWriteLock();
+
+    /**
+     * 读锁
+     */
+    private  ReentrantReadWriteLock.ReadLock readLock = fileLock.readLock();
+
+    /**
+     * 写锁
+     */
+    private  ReentrantReadWriteLock.WriteLock writeLock = fileLock.writeLock();
 
     @Override
     public boolean isDirectory() {
@@ -41,10 +58,17 @@ public abstract class IDataFile extends IAbstractNode implements IFile {
      */
     @Override
     public byte read(){
-        int index = readIndex + 1;
-        rangeCheck(index);
-        readIndex++;
-        return read(index);
+        byte b = -1;
+        try{
+            readLock.lock();
+            int index = readIndex + 1;
+            rangeCheck(index);
+            readIndex++;
+            b = read(index);
+        }finally {
+            readLock.unlock();
+        }
+        return  b;
     }
 
     /**
@@ -69,10 +93,16 @@ public abstract class IDataFile extends IAbstractNode implements IFile {
      */
     @Override
     public void read(byte[] data, int offset, int len){
-        int index = offset + len;
-        rangeCheck(index);
-        doRead(data, offset, len);
-        readIndex = index;
+        try{
+            readLock.lock();
+            int index = offset + len;
+            rangeCheck(index);
+            doRead(data, offset, len);
+            readIndex = index;
+        }finally {
+            readLock.unlock();
+        }
+
     }
 
     /**
@@ -100,7 +130,13 @@ public abstract class IDataFile extends IAbstractNode implements IFile {
      */
     @Override
     public int write(byte[] data){
-        return write(length, data);
+        writeLock.lock();
+        try{
+            return write(length, data);
+        }finally {
+            writeLock.unlock();
+        }
+
     }
 
     /**
@@ -111,13 +147,18 @@ public abstract class IDataFile extends IAbstractNode implements IFile {
      */
     @Override
     public int write(int offset, byte[] data){
-        if(offset > length){
-            offset = length;
+        writeLock.lock();
+        try{
+            if(offset > length){
+                offset = length;
+            }
+            int numNew = data.length;
+            doWrite(data, offset, numNew);
+            length += numNew;
+            return length;
+        }finally {
+            writeLock.unlock();
         }
-        int numNew = data.length;
-        doWrite(data, offset, numNew);
-        length += numNew;
-        return length;
     }
 
     /**

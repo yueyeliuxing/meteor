@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @program: ZQDFS
@@ -27,6 +29,8 @@ public class IDataDirectory extends IAbstractNode implements IDirectory, Persist
      * 子文件列表
      */
     private List<IFile> subfiles;
+
+    private Lock lock = new ReentrantLock();
 
     public IDataDirectory() {
     }
@@ -59,11 +63,17 @@ public class IDataDirectory extends IAbstractNode implements IDirectory, Persist
      */
     @Override
     public void addDirectory(IDirectory directory){
-        if(exists(directory)){
-            remove(directory);
+        lock.lock();
+        try{
+            if(exists(directory)){
+                remove(directory);
+            }
+            this.subdirectories.add(directory);
+            setModifyTime(new Date());
+        }finally {
+            lock.unlock();
         }
-        this.subdirectories.add(directory);
-        setModifyTime(new Date());
+
     }
 
     /**
@@ -72,11 +82,16 @@ public class IDataDirectory extends IAbstractNode implements IDirectory, Persist
      */
     @Override
     public void addFile(IFile file){
-        if(exists(file)){
-            remove(file);
+        lock.lock();
+        try{
+            if(exists(file)){
+                remove(file);
+            }
+            this.subfiles.add(file);
+            setModifyTime(new Date());
+        }finally {
+            lock.unlock();
         }
-        this.subfiles.add(file);
-        setModifyTime(new Date());
     }
 
 
@@ -86,11 +101,17 @@ public class IDataDirectory extends IAbstractNode implements IDirectory, Persist
      */
     @Override
     public void remove(IDirectory directory){
-        if(!exists(directory)){
-            return;
+        lock.lock();
+        try{
+            if(!exists(directory)){
+                return;
+            }
+            subdirectories.remove(directory);
+            setModifyTime(new Date());
+        }finally {
+            lock.unlock();
         }
-        subdirectories.remove(directory);
-        setModifyTime(new Date());
+
     }
 
     /**
@@ -99,11 +120,17 @@ public class IDataDirectory extends IAbstractNode implements IDirectory, Persist
      */
     @Override
     public void remove(IFile file){
-        if(!exists(file)){
-            return;
+        lock.lock();
+        try{
+            if(!exists(file)){
+                return;
+            }
+            subfiles.remove(file);
+            setModifyTime(new Date());
+        }finally {
+            lock.unlock();
         }
-        subfiles.remove(file);
-        setModifyTime(new Date());
+
     }
 
     private void setModifyTime(Date date){
