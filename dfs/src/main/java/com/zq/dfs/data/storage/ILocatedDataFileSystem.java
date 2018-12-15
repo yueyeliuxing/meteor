@@ -14,7 +14,7 @@ import com.zq.dfs.local.LocalIndexTables;
 public class ILocatedDataFileSystem extends IDataFileSystem implements IFileSystem {
 
     public ILocatedDataFileSystem(LocatedConfiguration locatedConfiguration){
-        super(new LocatedDataIndexTables(locatedConfiguration.indexTableFilePath()),
-                new LocatedDataBlockPool(locatedConfiguration.blockFilePath()));
+        this.blockPool = new LocatedDataBlockPool(locatedConfiguration.fsStorageRootPath());
+        this.indexTables = new LocatedDataIndexTables(locatedConfiguration.fsStorageRootPath(), this.blockPool);
     }
 }

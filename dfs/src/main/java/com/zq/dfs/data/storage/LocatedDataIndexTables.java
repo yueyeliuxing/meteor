@@ -1,13 +1,14 @@
 package com.zq.dfs.data.storage;
 
-import com.zq.dfs.IDirectory;
-import com.zq.dfs.IFile;
-import com.zq.dfs.INode;
-import com.zq.dfs.IndexTables;
+import com.zq.dfs.*;
+import com.zq.dfs.data.BlockPool;
 import com.zq.dfs.data.DataIndexTables;
 import com.zq.dfs.data.IDataBlockFile;
 import com.zq.dfs.data.IDataDirectory;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -40,11 +41,21 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
 
     private ScheduledExecutorService scheduledExecutorService;
 
-    public LocatedDataIndexTables(String fsStorageRootPath) {
+    public LocatedDataIndexTables(String fsStorageRootPath, BlockPool blockPool) {
+        super(blockPool);
         editLogStorage = new EditLogFileStorage(fsStorageRootPath + INDEX_TABLES_STORAGE_DIRECTORY);
         mirrorImageStorage = new MirrorImageStorage(fsStorageRootPath + INDEX_TABLES_STORAGE_DIRECTORY);
         scheduledExecutorService = Executors.newScheduledThreadPool(1);
+        restructureNodes();
         checkpoint();
+    }
+
+    /**
+     * 用块池重构节点
+     */
+    public void restructureNodes(){
+        deserialize(mirrorImageStorage.load2Bytes());
+        margeEditLog2IndexTables(this);
     }
 
     @Override
@@ -79,34 +90,38 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
             if(!stop && (editLogStorage.isStartCheckpoint()|| isCheckpointTime())){
                 editLogStorage.startCheckpoint();
                 DataIndexTables indexTables = mirrorImageStorage.load2IndexTables();
-                while(editLogStorage.readable() > 0){
-                    EditLog editLog = editLogStorage.acquire();
-                    EditLog.EditLogType type = EditLog.EditLogType.toEnum(editLog.getType());
-                    byte[] value = editLog.getValue();
-                    switch (type){
-                        case EDIT_DIRECTORY:
-                            IDirectory directory = new IDataDirectory();
-                            directory.deserialize(value);
-                            indexTables.put(directory.path(), directory);
-                            break;
-                        case EDIT_FILE:
-                            IFile file = new IDataBlockFile();
-                            file.deserialize(value);
-                            indexTables.put(file.path(), file);
-                            break;
-                        case DEL_PATH:
-                            String path = new String(value);
-                            indexTables.remove(path);
-                            break;
-                        default:
-                            break;
-                    }
-                }
+                margeEditLog2IndexTables(indexTables);
                 mirrorImageStorage.storageIndexTables(indexTables);
                 editLogStorage.endCheckpoint();
                 lastCheckpointTime = System.currentTimeMillis();
             }
         }, 0, 1, TimeUnit.MINUTES);
+    }
+
+    private void margeEditLog2IndexTables(DataIndexTables indexTables) {
+        while(editLogStorage.readable() > 0){
+            EditLog editLog = editLogStorage.acquire();
+            EditLog.EditLogType type = EditLog.EditLogType.toEnum(editLog.getType());
+            byte[] value = editLog.getValue();
+            switch (type){
+                case EDIT_DIRECTORY:
+                    IDirectory directory = new IDataDirectory();
+                    directory.deserialize(value);
+                    indexTables.put(directory.path(), directory);
+                    break;
+                case EDIT_FILE:
+                    IFile file = new IDataBlockFile();
+                    file.deserialize(value);
+                    indexTables.put(file.path(), file);
+                    break;
+                case DEL_PATH:
+                    String path = new String(value);
+                    indexTables.remove(path);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     private boolean isCheckpointTime() {

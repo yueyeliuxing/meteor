@@ -31,6 +31,18 @@ public class MirrorImageStorage {
         }
     }
 
+    public byte[] load2Bytes(){
+        byte[] mirrorBytes = null;
+        try {
+            mirrorFile.seek(0);
+            mirrorBytes = new byte[(int)mFile.length()];
+            mirrorFile.read(mirrorBytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return mirrorBytes;
+    }
+
     public DataIndexTables load2IndexTables(){
         DataIndexTables dataIndexTables = null;
         try {

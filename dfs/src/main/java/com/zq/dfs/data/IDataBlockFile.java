@@ -43,6 +43,10 @@ public class IDataBlockFile extends IDataFile {
         this.blocks = new ArrayList<>();
     }
 
+    public void setBlockPool(BlockPool blockPool){
+        this.blockPool = blockPool;
+    }
+
     @Override
     public byte read(int index) {
         for(Block block : blocks){

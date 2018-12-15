@@ -102,6 +102,11 @@ public class EditLogFileStorage {
      */
     public void startCheckpoint(){
         this.point = true;
+        try {
+            logFile.seek(0);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

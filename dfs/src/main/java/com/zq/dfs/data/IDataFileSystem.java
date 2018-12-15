@@ -19,20 +19,16 @@ public class IDataFileSystem implements IFileSystem {
     /**
      * 索引及目录映射
      */
-    private IndexTables indexTables;
+    protected IndexTables indexTables;
 
     /**
      * 数据块池
      */
-    private BlockPool blockPool;
+    protected BlockPool blockPool;
 
     public IDataFileSystem() {
-        this(new DataIndexTables(), new DataBlockPool());
-    }
-
-    public IDataFileSystem(IndexTables indexTables, BlockPool blockPool){
-        this.indexTables = indexTables;
-        this.blockPool = blockPool;
+        this.blockPool = new DataBlockPool();
+        this.indexTables = new DataIndexTables(blockPool);
     }
 
     @Override
@@ -42,9 +38,6 @@ public class IDataFileSystem implements IFileSystem {
 
     @Override
     public IFileInputStream open(String filePath) throws IOException{
-
-
-
         if(!exists(filePath)){
             throw new FileNotFoundException(filePath);
         }
