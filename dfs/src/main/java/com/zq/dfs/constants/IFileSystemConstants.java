@@ -24,12 +24,7 @@ public class IFileSystemConstants {
     public static final String FILE_SYSTEM_TYPE = "fs.type";
 
     /**
-     * 文件索引目录路径key
+     * 文件系统存储根目录
      */
-    public static final String INDEX_TABLES_FILE_PATH = "fs.index.tables.file.path";
-
-    /**
-     * 块存储路径
-     */
-    public static final String BLOCK_FILE_PATH = "fs.block.file.path";
+    public static final String FS_STORAGE_ROOT_PATH = "fs.storage.root.path";
 }

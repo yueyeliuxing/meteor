@@ -17,6 +17,8 @@ import java.io.FilenameFilter;
  **/
 public class LocatedDataBlockPool extends DataBlockPool implements BlockPool {
 
+    private static final String BLOCK_POOL_STORAGE_DIRECTORY = "/blocks";
+
     /**
      * 块目录文件
      */

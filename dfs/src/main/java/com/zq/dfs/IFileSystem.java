@@ -13,6 +13,19 @@ import java.io.IOException;
 public interface IFileSystem {
 
     /**
+     * 根目录
+     * @return
+     */
+    IDirectory root();
+
+    /**
+     * 返回指定路径的文件或目录
+     * @param path
+     * @return
+     */
+    INode find(String path);
+
+    /**
      * 打开文件
      * @param filePath
      * @return

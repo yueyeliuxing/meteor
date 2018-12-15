@@ -1,5 +1,7 @@
 package com.zq.dfs;
 
+import com.zq.dfs.constants.IFileSystemConstants;
+
 import java.util.Date;
 
 /**
@@ -34,6 +36,14 @@ public abstract class IAbstractNode implements INode {
      * 最后修改时间
      */
     protected Date lastModifyTime;
+
+    public String extractName(String path) {
+        if(path.equals(IFileSystemConstants.PATH_SEPARATOR)){
+            return "";
+        }
+        String[] temp = path.split(IFileSystemConstants.PATH_SEPARATOR);
+        return temp[temp.length-1];
+    }
 
     /**
      * 父级

@@ -2,8 +2,6 @@ package com.zq.dfs.data;
 
 import com.zq.dfs.*;
 
-import com.zq.dfs.constants.IFileSystemConstants;
-
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,18 +36,10 @@ public class IDataDirectory extends IAbstractNode implements IDirectory, Persist
     public IDataDirectory(INode parent, String path) {
         this.parent = parent;
         this.path = path;
-        this.name = getName(path);
+        this.name = extractName(path);
         this.subdirectories = new ArrayList<>();
         this.subfiles = new ArrayList<>();
         this.createTime = new Date();
-    }
-
-    private String getName(String path) {
-        if(path.equals(IFileSystemConstants.PATH_SEPARATOR)){
-            return "";
-        }
-        String[] temp = path.split(IFileSystemConstants.PATH_SEPARATOR);
-        return temp[temp.length-1];
     }
 
     @Override

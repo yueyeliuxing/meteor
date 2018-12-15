@@ -15,18 +15,10 @@ public class LocatedConfiguration extends FileSystemConfiguration {
     }
 
     /**
-     * 文件索引目录地址
+     * 文件系统存储根目录
      * @return
      */
-    public String indexTableFilePath(){
-        return configuration.get(IFileSystemConstants.INDEX_TABLES_FILE_PATH);
-    }
-
-    /**
-     * 块存储地址
-     * @return
-     */
-    public String blockFilePath(){
-        return configuration.get(IFileSystemConstants.BLOCK_FILE_PATH);
+    public String fsStorageRootPath(){
+        return configuration.get(IFileSystemConstants.FS_STORAGE_ROOT_PATH);
     }
 }

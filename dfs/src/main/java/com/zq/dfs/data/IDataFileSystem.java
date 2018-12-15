@@ -5,6 +5,8 @@ import com.zq.dfs.constants.IFileSystemConstants;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @program: ZQDFS
@@ -34,7 +36,15 @@ public class IDataFileSystem implements IFileSystem {
     }
 
     @Override
+    public IDirectory root() {
+        return (IDirectory) indexTables.root();
+    }
+
+    @Override
     public IFileInputStream open(String filePath) throws IOException{
+
+
+
         if(!exists(filePath)){
             throw new FileNotFoundException(filePath);
         }
@@ -59,7 +69,8 @@ public class IDataFileSystem implements IFileSystem {
         return new IFileOutputStream(file);
     }
 
-    private INode find(String path) {
+    @Override
+    public INode find(String path) {
         return indexTables.find(path);
     }
 
@@ -88,6 +99,9 @@ public class IDataFileSystem implements IFileSystem {
     public IDirectory mkdirs(String path) throws IOException {
         if(!isDirectoryPath(path)){
             throw new IOException(String.format("this is not a file path:%s", path));
+        }
+        if(exists(path)){
+            return (IDirectory) find(path);
         }
         IDirectory directory = (IDirectory) indexTables.root();
         String[] params = path.split(IFileSystemConstants.PATH_SEPARATOR);

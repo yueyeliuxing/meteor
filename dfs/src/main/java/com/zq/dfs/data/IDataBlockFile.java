@@ -37,14 +37,10 @@ public class IDataBlockFile extends IDataFile {
         this.blockPool = blockPool;
         this.parent = parent;
         this.path = path;
-        this.name = getName(path);
+        this.name = extractName(path);
         this.length = 0;
         this.readIndex = 0;
         this.blocks = new ArrayList<>();
-    }
-
-    private String getName(String path) {
-        return path.substring(path.lastIndexOf(IFileSystemConstants.PATH_SEPARATOR)+1, path.length());
     }
 
     @Override

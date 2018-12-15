@@ -22,6 +22,8 @@ import static com.zq.dfs.data.storage.EditLog.EditLogType.*;
  **/
 public class LocatedDataIndexTables extends DataIndexTables implements IndexTables {
 
+    private static final String INDEX_TABLES_STORAGE_DIRECTORY = "/tables";
+
     /**
      * 变更日志存储服务
      */
@@ -38,9 +40,9 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
 
     private ScheduledExecutorService scheduledExecutorService;
 
-    public LocatedDataIndexTables(String indexTablesDirectory) {
-        editLogStorage = new EditLogFileStorage(indexTablesDirectory);
-        mirrorImageStorage = new MirrorImageStorage(indexTablesDirectory);
+    public LocatedDataIndexTables(String fsStorageRootPath) {
+        editLogStorage = new EditLogFileStorage(fsStorageRootPath + INDEX_TABLES_STORAGE_DIRECTORY);
+        mirrorImageStorage = new MirrorImageStorage(fsStorageRootPath + INDEX_TABLES_STORAGE_DIRECTORY);
         scheduledExecutorService = Executors.newScheduledThreadPool(1);
         checkpoint();
     }

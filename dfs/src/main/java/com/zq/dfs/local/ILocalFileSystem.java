@@ -21,6 +21,16 @@ public class ILocalFileSystem implements IFileSystem {
     }
 
     @Override
+    public IDirectory root() {
+        return null;
+    }
+
+    @Override
+    public INode find(String path) {
+        return indexTables.find(path);
+    }
+
+    @Override
     public IFileInputStream open(String filePath) throws IOException {
         if(!exists(filePath)){
             throw new FileNotFoundException(filePath);
