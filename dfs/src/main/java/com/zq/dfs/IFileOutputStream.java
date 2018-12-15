@@ -6,7 +6,7 @@ package com.zq.dfs;
  * @author: zhouqi1
  * @create: 2018-12-11 11:09
  **/
-public class IFileOutputStream {
+public class IFileOutputStream implements IOutputStream {
 
     /**
      * 文件
@@ -22,6 +22,7 @@ public class IFileOutputStream {
      * @param data
      * @return
      */
+    @Override
     public int write(byte[] data){
         return file.write(data);
     }
@@ -32,6 +33,7 @@ public class IFileOutputStream {
      * @param data
      * @return
      */
+    @Override
     public int write(int offset, byte[] data){
         return file.write(offset, data);
     }
@@ -39,6 +41,7 @@ public class IFileOutputStream {
     /**
      * 关闭
      */
+    @Override
     public void close(){
         file.close();
     }

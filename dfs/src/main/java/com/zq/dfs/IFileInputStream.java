@@ -6,7 +6,7 @@ package com.zq.dfs;
  * @author: zhouqi1
  * @create: 2018-12-11 10:56
  **/
-public class IFileInputStream {
+public class IFileInputStream implements IInputStream {
 
     /**
      * 文件
@@ -17,6 +17,7 @@ public class IFileInputStream {
         this.file = file;
     }
 
+    @Override
     public byte read(){
         return file.read();
     }
@@ -25,6 +26,7 @@ public class IFileInputStream {
      * 读取 数据
      * @param data
      */
+    @Override
     public void read(byte[] data){
         file.read(data);
     }
@@ -33,6 +35,7 @@ public class IFileInputStream {
      * 读取 数据
      * @param data
      */
+    @Override
     public void read(byte[] data, int offset, int len){
         file.read(data, offset, len);
     }
@@ -41,6 +44,7 @@ public class IFileInputStream {
      * 可读余量
      * @return
      */
+    @Override
     public int available(){
         return file.available();
     }
@@ -48,6 +52,7 @@ public class IFileInputStream {
     /**
      * 关闭
      */
+    @Override
     public void close(){
         file.close();
     }
