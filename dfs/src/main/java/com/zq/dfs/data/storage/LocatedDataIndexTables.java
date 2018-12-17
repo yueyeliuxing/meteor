@@ -41,12 +41,15 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
 
     private ScheduledExecutorService scheduledExecutorService;
 
+    private boolean located = false;
+
     public LocatedDataIndexTables(String fsStorageRootPath, BlockPool blockPool) {
         super(blockPool);
         editLogStorage = new EditLogFileStorage(fsStorageRootPath + INDEX_TABLES_STORAGE_DIRECTORY);
         mirrorImageStorage = new MirrorImageStorage(fsStorageRootPath + INDEX_TABLES_STORAGE_DIRECTORY);
         scheduledExecutorService = Executors.newScheduledThreadPool(1);
         restructureNodes();
+        this.located = true;
         checkpoint();
     }
 
@@ -63,8 +66,11 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
 
     @Override
     public void put(String path, INode node) {
-        //添加到变更日志文件中
-        editLogStorage.storage(new EditLog(node.isDirectory() ? EDIT_DIRECTORY.value() : EDIT_FILE.value(), node.serialize()));
+
+        if(this.located){
+            //添加到变更日志文件中
+            editLogStorage.storage(new EditLog(node.isDirectory() ? EDIT_DIRECTORY.value() : EDIT_FILE.value(), node.serialize()));
+        }
 
         //添加到目录
         super.put(path, node);
@@ -72,8 +78,11 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
 
     @Override
     public void remove(String path) {
-        //添加到变更日志文件中
-        editLogStorage.storage(new EditLog(DEL_PATH.value(), path.getBytes()));
+
+        if(this.located){
+            //添加到变更日志文件中
+            editLogStorage.storage(new EditLog(DEL_PATH.value(), path.getBytes()));
+        }
 
         super.remove(path);
     }

@@ -68,8 +68,8 @@ public class LocatedDataBlock extends DataBlock implements Block{
     public int write(int offset, byte[] data, int len) {
         blockSynchronizedThread.execute(()->{
             try {
-                blockFile.seek(blockFile.length());
-                blockFile.write(data, offset, len);
+                blockFile.seek(offset);
+                blockFile.write(data, 0, len);
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -49,7 +49,7 @@ public class EditLogFileStorage {
             try {
                 RandomAccessFile file = getEditLogFile();
                 byte[] logValue = editLog.serialize();
-                file.write(logValue.length);
+                file.writeInt(logValue.length);
                 file.write(logValue);
             } catch (IOException e) {
                 e.printStackTrace();
