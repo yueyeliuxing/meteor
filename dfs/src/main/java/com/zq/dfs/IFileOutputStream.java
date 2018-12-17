@@ -6,7 +6,7 @@ package com.zq.dfs;
  * @author: zhouqi1
  * @create: 2018-12-11 11:09
  **/
-public class IFileOutputStream implements IOutputStream {
+public class IFileOutputStream implements IDataOutputStream {
 
     /**
      * 文件

@@ -1,6 +1,6 @@
 package com.zq.dfs;
 
-public interface IOutputStream {
+public interface IDataOutputStream {
     int write(byte[] data);
 
     int write(int offset, byte[] data);

@@ -1,6 +1,6 @@
 package com.zq.dfs;
 
-public interface IInputStream {
+public interface IDataInputStream {
     byte read();
 
     void read(byte[] data);
