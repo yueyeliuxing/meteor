@@ -86,6 +86,14 @@ public class Chunk {
     }
 
     /**
+     *
+     * @return
+     */
+    public int chunkSize(){
+        return data.length;
+    }
+
+    /**
      * 还原成空的内存块
      */
     public void recover(){

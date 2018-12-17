@@ -1,6 +1,7 @@
 package com.zq.dfs.data.storage;
 
 import com.zq.dfs.constants.IFileSystemConstants;
+import com.zq.dfs.data.BlockPool;
 import com.zq.dfs.data.DataIndexTables;
 
 import java.io.*;
@@ -43,13 +44,13 @@ public class MirrorImageStorage {
         return mirrorBytes;
     }
 
-    public DataIndexTables load2IndexTables(){
+    public DataIndexTables load2IndexTables(BlockPool blockPool){
         DataIndexTables dataIndexTables = null;
         try {
             mirrorFile.seek(0);
             byte[] mirrorBytes = new byte[(int)mFile.length()];
             mirrorFile.read(mirrorBytes);
-            dataIndexTables = new DataIndexTables();
+            dataIndexTables = new DataIndexTables(blockPool);
             dataIndexTables.deserialize(mirrorBytes);
         } catch (IOException e) {
             e.printStackTrace();

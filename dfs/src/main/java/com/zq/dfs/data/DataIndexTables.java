@@ -44,6 +44,10 @@ public class DataIndexTables implements IndexTables, Persistencer {
         return root;
     }
 
+    public BlockPool blockPool() {
+        return blockPool;
+    }
+
     @Override
     public boolean exists(String path) {
         return inodesOfpath.containsKey(path);
@@ -85,10 +89,6 @@ public class DataIndexTables implements IndexTables, Persistencer {
             node.close();
         }
         inodesOfpath.clear();
-    }
-
-    public Map<String, INode> nodeList(){
-        return inodesOfpath;
     }
 
     @Override

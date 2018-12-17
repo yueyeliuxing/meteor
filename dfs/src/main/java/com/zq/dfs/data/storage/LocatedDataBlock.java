@@ -57,7 +57,7 @@ public class LocatedDataBlock extends DataBlock implements Block{
                 blockFile.seek(0L);
                 byte[] data = new byte[this.length];
                 blockFile.read(data);
-                this.data = data;
+                write(0, data, data.length);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -81,7 +81,7 @@ public class LocatedDataBlock extends DataBlock implements Block{
     public void close() {
         try {
             super.close();
-            blockSynchronizedThread.shutdownNow();
+            blockSynchronizedThread.shutdown();
             blockFile.close();
         } catch (IOException e) {
             e.printStackTrace();

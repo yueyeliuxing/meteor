@@ -54,7 +54,10 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
      * 用块池重构节点
      */
     public void restructureNodes(){
-        deserialize(mirrorImageStorage.load2Bytes());
+        byte[] data = mirrorImageStorage.load2Bytes();
+        if(data != null && data.length > 0){
+            deserialize(data);
+        }
         margeEditLog2IndexTables(this);
     }
 
@@ -89,7 +92,7 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
         scheduledExecutorService.scheduleWithFixedDelay(()->{
             if(!stop && (editLogStorage.isStartCheckpoint()|| isCheckpointTime())){
                 editLogStorage.startCheckpoint();
-                DataIndexTables indexTables = mirrorImageStorage.load2IndexTables();
+                DataIndexTables indexTables = mirrorImageStorage.load2IndexTables(blockPool());
                 margeEditLog2IndexTables(indexTables);
                 mirrorImageStorage.storageIndexTables(indexTables);
                 editLogStorage.endCheckpoint();
@@ -101,6 +104,7 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
     private void margeEditLog2IndexTables(DataIndexTables indexTables) {
         while(editLogStorage.readable() > 0){
             EditLog editLog = editLogStorage.acquire();
+            System.out.println(editLog.getType() + "--123321");
             EditLog.EditLogType type = EditLog.EditLogType.toEnum(editLog.getType());
             byte[] value = editLog.getValue();
             switch (type){

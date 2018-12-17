@@ -41,7 +41,7 @@ public class Mempool {
      */
     private int lastChunkSize;
 
-    public Mempool() {
+    private Mempool() {
         this.subClassList = new ArrayList<>(DEFAULT_SUB_CLASS_LEN);
         int subClassLen = this.subClassList.size();
         lastChunkSize = FIRST_CHUNK_SIZE;
@@ -51,6 +51,14 @@ public class Mempool {
             subClassLen--;
         }
     }
+    public static class MempoolSingle {
+        public static final Mempool MEM_POOL = new Mempool();
+    }
+
+    public static Mempool pool(){
+        return MempoolSingle.MEM_POOL;
+    }
+
 
     /**
      * 申请 chunk

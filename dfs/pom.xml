@@ -58,6 +58,12 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>com.zq.meteor</groupId>
+			<artifactId>memory-pool</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
 
 	</dependencies>
 

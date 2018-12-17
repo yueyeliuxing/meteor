@@ -1,6 +1,9 @@
 package com.zq.dfs.data;
 
 
+import com.zq.memory.pool.Chunk;
+import com.zq.memory.pool.Mempool;
+
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
@@ -15,13 +18,13 @@ public class DataBlock extends AbstractBlock implements Block {
     /**
      * 字节数组
      */
-    protected byte[] data;
+    protected Chunk dataChunk;
 
     public DataBlock(long blockId, int fileOffset) {
         this.blockId = blockId;
         this.offset = fileOffset;
         this.length = 0;
-        this.data = new byte[8];
+        this.dataChunk = Mempool.pool().alloc(8);
     }
 
     /**
@@ -30,7 +33,7 @@ public class DataBlock extends AbstractBlock implements Block {
      */
     @Override
     public byte read(int index){
-        return data[index];
+        return dataChunk.read(index);
     }
 
     /**
@@ -41,7 +44,7 @@ public class DataBlock extends AbstractBlock implements Block {
     public void read(byte[] data, int offset, int len){
         int index = offset + len;
         rangeCheck(index);
-        System.arraycopy(this.data, offset, data, 0, len);
+        dataChunk.read(data, offset, len);
     }
 
     private void rangeCheck(int index) {
@@ -66,21 +69,21 @@ public class DataBlock extends AbstractBlock implements Block {
             offset = length;
         }
         ensureExplicitCapacity(offset + len);
-        System.arraycopy(data, 0, this.data, length, len);
+        dataChunk.write(offset, data, len);
         length += len;
         return length;
     }
 
     private void ensureExplicitCapacity(int minCapacity) {
         // overflow-conscious code
-        if (minCapacity - data.length > 0){
+        if (minCapacity - dataChunk.chunkSize() > 0){
             grow(minCapacity);
         }
     }
 
     private void grow(int minCapacity) {
         // overflow-conscious code
-        int oldCapacity = data.length;
+        int oldCapacity = dataChunk.chunkSize();
         int newCapacity = oldCapacity + (oldCapacity >> 1);
         if (newCapacity - minCapacity < 0){
             newCapacity = minCapacity;
@@ -90,7 +93,7 @@ public class DataBlock extends AbstractBlock implements Block {
             newCapacity = hugeCapacity(minCapacity);
         }
         // minCapacity is usually close to size, so this is a win:
-        data = Arrays.copyOf(data, newCapacity);
+        this.dataChunk = Mempool.pool().alloc(newCapacity);
     }
 
     private int hugeCapacity(int minCapacity) {
