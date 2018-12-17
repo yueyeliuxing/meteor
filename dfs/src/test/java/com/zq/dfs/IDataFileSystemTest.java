@@ -23,8 +23,7 @@ public class IDataFileSystemTest {
         try{
             Configuration configuration = new Configuration();
             configuration.put(IFileSystemConstants.FILE_SYSTEM_TYPE, FileSystemType.MEMORY_PERSISTENCE.name());
-            configuration.put(IFileSystemConstants.INDEX_TABLES_FILE_PATH, "E:\\dfs\\tables");
-            configuration.put(IFileSystemConstants.BLOCK_FILE_PATH, "E:\\dfs\\blocks");
+            configuration.put(IFileSystemConstants.FS_STORAGE_ROOT_PATH, "E:\\dfs");
             IFileSystem fileSystem = IFileSystems.fileSystem(configuration);
             String path = "/user/zhouqi/test.txt";
             fileSystem.createFile(path);
