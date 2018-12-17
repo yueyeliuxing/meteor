@@ -18,6 +18,7 @@
 
 	<modules>
 		<module>dfs</module>
+		<module>memory-pool</module>
 
 	</modules>
 
