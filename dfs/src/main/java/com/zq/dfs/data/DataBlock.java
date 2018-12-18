@@ -107,4 +107,10 @@ public class DataBlock extends AbstractBlock implements Block {
                 Integer.MAX_VALUE :
                 maxBlockSize;
     }
+
+    @Override
+    public void close() {
+        //回收内存
+        Mempool.pool().recovery(dataChunk);
+    }
 }
