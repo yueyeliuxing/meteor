@@ -66,20 +66,18 @@ public class DataIndexTables implements IndexTables, Persistencer {
     @Override
     public void remove(String path) {
         INode node = find(path);
-        IDirectory parent = (IDirectory) node.parent();
+        if(node == null){
+            return;
+        }
         if(node.isDirectory()){
-            parent.remove((IDirectory)node);
             for(String key : inodesOfpath.keySet()){
                 if(key.startsWith(path)){
                     inodesOfpath.remove(key);
                 }
             }
         }else {
-            parent.remove((IFile)node);
             inodesOfpath.remove(path);
         }
-        node.parent(null);
-
     }
 
     @Override
@@ -126,8 +124,8 @@ public class DataIndexTables implements IndexTables, Persistencer {
     public void deserialize(byte[] data) {
         ByteBuffer byteBuffer = ByteBuffer.wrap(data);
         int nodesSize = byteBuffer.getInt();
-        if(nodesSize > 0){
-            for(int i = 0; i < nodesSize; i++){
+        if(nodesSize > 0) {
+            for (int i = 0; i < nodesSize; i++) {
                 byte type = byteBuffer.get();
                 int nodeByteLen = byteBuffer.getInt();
                 byte[] nodeByte = new byte[nodeByteLen];
@@ -136,30 +134,42 @@ public class DataIndexTables implements IndexTables, Persistencer {
                 node.deserialize(nodeByte);
                 inodesOfpath.put(node.path(), node);
             }
-            for(String path : inodesOfpath.keySet()){
-                INode currentNode = inodesOfpath.get(path);
-                if(currentNode.isDirectory()){
-                    IDataDirectory directory = (IDataDirectory) currentNode;
-                    List<IDirectory> subdirectories =  directory.subdirectories();
-                    if(subdirectories != null && !subdirectories.isEmpty()){
-                        for(IDirectory subdirectory : subdirectories){
-                            directory.remove(subdirectory);
-                            String subdirectoryPath = subdirectory.path();
-                            IDirectory directory1 = (IDirectory) inodesOfpath.get(subdirectoryPath);
-                            directory1.parent(directory);
-                            directory.addDirectory(directory1);
-                        }
-                    }
-                    List<IFile> subfiles =  directory.subFiles();
-                    if(subfiles != null && !subfiles.isEmpty()){
-                        for(IFile subfile : subfiles){
-                            directory.remove(subfile);
-                            String subfilePath = subfile.path();
-                            IFile file = (IFile) inodesOfpath.get(subfilePath);
-                            file.parent(directory);
-                            directory.addFile(file);
-                        }
-                    }
+
+            /**
+             * 组装树结构
+             */
+            assembleDirectory((IDirectory) inodesOfpath.get(IFileSystemConstants.ROOT_DIRECTORY_PATH));
+
+        }
+    }
+
+    /**
+     * 组装node 为树结构
+     * @param directory
+     */
+    private void assembleDirectory(IDirectory directory) {
+        List<IDirectory> subdirectories =  directory.subdirectories();
+        List<IFile> subfiles =  directory.subFiles();
+        if(subdirectories != null && !subdirectories.isEmpty()){
+            for(IDirectory subdirectory : subdirectories){
+                directory.remove(subdirectory);
+                String subdirectoryPath = subdirectory.path();
+                IDirectory directory1 = (IDirectory) inodesOfpath.get(subdirectoryPath);
+                if(directory1 != null){
+                    directory1.parent(directory);
+                    directory.addDirectory(directory1);
+                    assembleDirectory(directory1);
+                }
+            }
+        }
+        if(subfiles != null && !subfiles.isEmpty()){
+            for(IFile subfile : subfiles){
+                directory.remove(subfile);
+                String subfilePath = subfile.path();
+                IFile file = (IFile) inodesOfpath.get(subfilePath);
+                if(file != null){
+                    file.parent(directory);
+                    directory.addFile(file);
                 }
             }
         }

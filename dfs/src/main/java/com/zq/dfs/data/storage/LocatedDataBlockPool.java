@@ -54,7 +54,7 @@ public class LocatedDataBlockPool extends DataBlockPool implements BlockPool {
     }
 
     private String getBlockFilePath(long blockId, int fileOffset) {
-        return String.format("%s-%s", blockDirectory + IFileSystemConstants.PATH_SEPARATOR + DataBlock.BLOCK_NAME_PREX+blockId, fileOffset);
+        return String.format("%s-%s", blockDirectory + BLOCK_POOL_STORAGE_DIRECTORY + IFileSystemConstants.PATH_SEPARATOR + DataBlock.BLOCK_NAME_PREX+blockId, fileOffset);
     }
 
     @Override

@@ -40,10 +40,10 @@ public class IDataFileSystemTest {
 
             System.out.println(new  String(context));
 
-            String targetPath = "/user/zhouqi/test1.txt";
-            fileSystem.rename(path, targetPath);
+           // String targetPath = "/user/zhouqi/test1.txt";
+           // fileSystem.rename(path, targetPath);
 
-            fileSystem.delete(targetPath);
+            fileSystem.delete(path);
             System.out.println("asdasd-");
 
         }catch (IOException e){

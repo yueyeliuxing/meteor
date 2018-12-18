@@ -123,7 +123,7 @@ public class LocatedDataIndexTables extends DataIndexTables implements IndexTabl
                     indexTables.put(directory.path(), directory);
                     break;
                 case EDIT_FILE:
-                    IFile file = new IDataBlockFile();
+                    IFile file = new IDataBlockFile(blockPool());
                     file.deserialize(value);
                     indexTables.put(file.path(), file);
                     break;

@@ -284,25 +284,21 @@ public class IDataDirectory extends IAbstractNode implements IDirectory, Persist
 
         int directorySize = byteBuffer.getInt();
         if(directorySize > 0){
-            List<IDirectory> subdirectories = new ArrayList<>();
             for(int i = 0; i < directorySize; i++){
                 int pSize = byteBuffer.getInt();
                 byte[] path = new byte[pSize];
                 byteBuffer.get(path);
                 subdirectories.add(new IDataDirectory(this, new String(path)));
-                this.subdirectories = subdirectories;
             }
         }
 
         int fileSize = byteBuffer.getInt();
         if(fileSize > 0){
-            List<IFile> subfiles = new ArrayList<>();
             for(int i = 0; i < directorySize; i++){
                 int pSize = byteBuffer.getInt();
                 byte[] path = new byte[pSize];
                 byteBuffer.get(path);
                 subfiles.add(new IDataBlockFile(null, this, new String(path)));
-                this.subfiles = subfiles;
             }
         }
 

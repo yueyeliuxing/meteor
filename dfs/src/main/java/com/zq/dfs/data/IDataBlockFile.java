@@ -26,25 +26,18 @@ public class IDataBlockFile extends IDataFile {
      */
     private List<Block> blocks;
 
-    public IDataBlockFile() {
-    }
-
     public IDataBlockFile(BlockPool blockPool) {
         this.blockPool = blockPool;
-    }
-
-    public IDataBlockFile(BlockPool blockPool, INode parent, String path) {
-        this.blockPool = blockPool;
-        this.parent = parent;
-        this.path = path;
-        this.name = extractName(path);
         this.length = 0;
         this.readIndex = 0;
         this.blocks = new ArrayList<>();
     }
 
-    public void setBlockPool(BlockPool blockPool){
-        this.blockPool = blockPool;
+    public IDataBlockFile(BlockPool blockPool, INode parent, String path) {
+        this(blockPool);
+        this.parent = parent;
+        this.path = path;
+        this.name = extractName(path);
     }
 
     @Override
@@ -218,10 +211,9 @@ public class IDataBlockFile extends IDataFile {
 
         int blockSize = byteBuffer.getInt();
         if(blockSize > 0){
-            List<Block> blocks = new ArrayList<>();
             for(int i = 0; i < blockSize; i++){
                 long blockId = byteBuffer.getLong();
-                blocks.add(blockPool.find(blockId));
+                this.blocks.add(blockPool.find(blockId));
             }
         }
     }

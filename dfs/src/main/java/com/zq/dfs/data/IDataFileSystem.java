@@ -124,6 +124,13 @@ public class IDataFileSystem implements IFileSystem {
         if(exists(path)){
             INode node = find(path);
             node.distory();
+            IDirectory parent = (IDirectory) node.parent();
+            if(node.isDirectory()){
+                parent.remove((IDirectory)node);
+            }else {
+                parent.remove((IFile)node);
+            }
+            node.parent(null);
             indexTables.remove(path);
         }
     }
