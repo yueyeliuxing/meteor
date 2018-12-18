@@ -93,7 +93,9 @@ public class DataBlock extends AbstractBlock implements Block {
             newCapacity = hugeCapacity(minCapacity);
         }
         // minCapacity is usually close to size, so this is a win:
-        this.dataChunk = Mempool.pool().alloc(newCapacity);
+        Mempool mempool = Mempool.pool();
+        mempool.recovery(this.dataChunk);
+        this.dataChunk = mempool.alloc(newCapacity);
     }
 
     private int hugeCapacity(int minCapacity) {
